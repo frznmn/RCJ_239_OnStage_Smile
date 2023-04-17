@@ -13,7 +13,7 @@ int myTimer2 = millis();
 #include "NEW.h"
 
 #define PIN 9 //matrix connection pin 
-#define mw 16 // ширина
+#define mw 8 // ширина
 #define mh 8 // высота
 #define NUMMATRIX (mw*mh) //количество светодиодов в матрице
 
@@ -46,8 +46,8 @@ void setup() {
 
   Serial1.begin(9600);
 
-  FastLED.addLeds<NEOPIXEL, PIN>(leds, NUMMATRIX  ).setCorrection(TypicalLEDStrip);
-  FastLED.addLeds<NEOPIXEL, 8>(cheeks, 14).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<NEOPIXEL, 8>(leds, NUMMATRIX  ).setCorrection(TypicalLEDStrip);
+  FastLED.addLeds<NEOPIXEL, 10>(cheeks, 14).setCorrection(TypicalLEDStrip);
 
   matrix->begin();
   matrix->setTextWrap(false);
@@ -89,7 +89,7 @@ void loop() {
 
 
   matrix->drawRGBBitmap(0, 0, (const uint16_t *) default_bitmap, 16, 8); matrix->show();
-  for ( int i = 0; i < 15; i++)
+  for ( int i = 0; i < 16; i++)
   {
     cheeks[i] = 0x901010;
     matrix->show();

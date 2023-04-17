@@ -1,7 +1,7 @@
 #include <FastLED.h>
 
 // How many leds in your strip?
-#define NUM_LEDS 14
+#define NUM_LEDS 64
 
 // For led chips like WS2812, which have a data line, ground, and power, you just
 // need to define DATA_PIN.  For led chipsets that are SPI based (four wires - data, clock,
@@ -62,7 +62,7 @@ void loop() {
   int i;
 
   FastLED.show();
-  for ( int i = 0; i<14; i = i + 1)
+  for ( int i = 0; i<64; i = i + 1)
   {
   leds[i] = 0x300801;
   }

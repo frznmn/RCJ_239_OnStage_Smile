@@ -89,12 +89,7 @@ void loop() {
   */
   //drawRGBBitmap(x координата верхнего левого угла,y координата верхнего левого угла, bitmap byte массив 16бит цветной, ширина в пикселях, высота в пикселях)
 
-  if (Serial1.available() > 0)
-  {
-    condition = Serial1.read();
-    Serial.println(condition);
-    Serial1.write(condition);
-  }
+  condition=2;
 
   switch (condition)
   {
