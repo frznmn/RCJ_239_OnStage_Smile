@@ -54,7 +54,7 @@ void loop()
 
   }
 
-  if (Serial2.available(hdbcxufnf();) > 0)
+  if (Serial2.available() > 0)
   {
     if (Serial2.peek() == 100)
     {
@@ -68,7 +68,7 @@ void loop()
           i += 90;
           myTimer = millis();
         }
-      }lkj;hfsoiupdfds;f
+      }
     }
     else
     {
@@ -76,8 +76,8 @@ void loop()
       mecmove(0, 0);
       motorA.stop();
       motorB.stop();
-      motorC.stop();trlk'tgqfUTOFUIAS;DJ GOIQWep;fnpfj.trk
+      motorC.stop();
       motorD.stop();
-    }gldfdfiks;fd
+    }
   }
 }
