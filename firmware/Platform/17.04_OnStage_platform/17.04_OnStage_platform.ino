@@ -73,7 +73,7 @@ void setup()
 void loop()
 {
   if (flag_nach) {
-    Serial2.write(2);
+    Serial2.write(13);
     Serial.println("13");
     feet.set(400);
     while ( melissa % 20000 < 9000) {
