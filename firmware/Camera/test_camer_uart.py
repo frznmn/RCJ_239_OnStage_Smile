@@ -1,25 +1,3 @@
-# Untitled - By: hello - Пн мар 29 2021
-
-import sensor, image, utime, pyb
-
-sensor.reset()
-sensor.set_pixformat(sensor.RGB565)
-sensor.set_framesize(sensor.QCIF)
-sensor.skip_frames(time = 100)
-serial = pyb.UART(3, 9600, timeout = 100, timeout_char = 100)
-serial.init(9600, bits=8, parity=None, stop=1, timeout_char=100)
-tag_families = 0
-tag_families |= image.TAG36H11 # comment out to disable this family (default family)
-
-while(True):
-    img=sensor.snapshot()
-    tags = img.find_apriltags(families=image.TAG36H11)
-    if len(tags) == 1:
-        tag = tags[0]
-        if tag.id() == 6:
-            k = 1
-        if tag.id() == 7:
-            k = 2
-        serial.writechar(0)
-        print(tag.id())
-        img.draw_rectangle(tag.x(),tag.y(),tag.w(),tag.h())
+version https://git-lfs.github.com/spec/v1
+oid sha256:b46b8adc2f5173cd564d09ed21e1b9796ec084f3c10fe4e8c3a84aa73b242908
+size 765
