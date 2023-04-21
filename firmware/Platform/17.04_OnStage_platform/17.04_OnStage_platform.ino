@@ -86,9 +86,15 @@ void loop()
     motorD.set(0);
     flag_nach = false;
   }
-
-  
-  if (Serial3.available() > 0)
+  if (Serial2.available()) {
+    Serial.print("Serial2: ");
+    Serial.println(Serial2.read());
+  }
+  if (Serial3.available()) {
+    Serial.print("Serial3: ");
+    Serial.println(Serial3.read());
+  }
+  /*if (Serial3.available() > 0)
   {
     int tag = Serial3.read();
     //Serial.println(tag);
@@ -170,7 +176,7 @@ void loop()
             }
           }
         }
-        break;//*/
+        break;
       case 2:
         Serial.println("case 2");
         Serial2.write(condition);                     //первый жест, двигаемся туда
@@ -212,9 +218,9 @@ void loop()
       case 5:
         Serial.println("case 4");
         Serial2.write(condition);
-        break;//*/
+        break;
       default: break;
 
     }
-  }
+  }*/
 }
