@@ -9,10 +9,16 @@
 Servo earL;  // create servo object to control a servo
 Servo earR;
 
-int pinD0 = 36;  // Пин к которому подключен D0
+unsigned long newTimeL, newTimeR, timeTurningOn;
+const int maxServo = 110;
+const int minServo = 70;
+int polL = 90;
+int polR = 90;
+int vServo = 10;  // в миллисекундах задержка
+int stepPin = 36;  // Пин к которому подключен D0
 int motionDetected = 0;
 int sensorVal = 0;
-int naprav = 1;
+int napr = 1;
 
 #define BRIGHT 20
 
@@ -32,57 +38,37 @@ SparkFun_APDS9960 apds = SparkFun_APDS9960();  // Создаем объект
 int isr_flag = 0;                              // Создаем переменную isr_flag
 int count = 0, c = 0;
 
+int ifTurningOn = 1;
+
 void setup() {
+  Serial3.begin(9600);
+  Serial.begin(115200);
 
-  // Инициализируем последовательную связь и отправляем сообщения
-  Serial.begin(9600);
-  Serial.println();
-  Serial.println(F("--------------------------------"));
-  Serial.println(F("APDS-9960 - GestureTest"));
-  Serial.println(F("--------------------------------"));
-
-  // Инициализируем прерывание на спад
   attachInterrupt(4, interruptRoutine, FALLING);
+  pinMode(stepPin, INPUT);
 
-  // Инициализируем APDS-9960
-  if (apds.init()) {
-    Serial.println(F("APDS-9960 initialization complete"));
-  } else {
-    Serial.println(F("Something went wrong during APDS-9960 init!"));
-  }
+  eyeL.begin();
+  eyeR.begin();
+  mouth.begin();
+  eyeL.setBrightness(BRIGHT);
+  eyeR.setBrightness(BRIGHT);
+  mouth.setBrightness(BRIGHT);
 
-  if (apds.enableGestureSensor(true)) {
-    Serial.println(F("Gesture sensor is now running"));
-  } else {
-    Serial.println(F("Something went wrong during gesture sensor init!"));
-  }
-  eyeL.begin();                 // инициализируем ленту
-  eyeL.setBrightness(BRIGHT);   // указываем яркость светодиодов (максимум 255)
-  eyeR.begin();                 // инициализируем ленту
-  eyeR.setBrightness(BRIGHT);   // указываем яркость светодиодов (максимум 255)
-  mouth.begin();                // инициализируем ленту
-  mouth.setBrightness(BRIGHT);  // указываем яркость светодиодов (максимум 255)
-
-  earL.attach(EAR_L);  // attaches the servo on pin 9 to the servo object
+  earL.attach(EAR_L);
   earR.attach(EAR_R);
-  earL.write(90);  // tell servo to go to position in variable 'pos'
-  earR.write(90);
-  pinMode(pinD0, INPUT);
-}
-
-void CuteEars(){
-
+  earL.write(polL);
+  earR.write(polR);
 }
 
 void calm() {
   for (int i = 3; i <= 9; i++) {
-    eyeL.setPixelColor(i, eyeL.Color(255, 255, 255));  // включаем белый цвет на 3 светодиоде
+    eyeL.setPixelColor(i, eyeL.Color(255, 255, 255));
     eyeR.setPixelColor(i, eyeR.Color(255, 255, 255));
   }
   for (int i = 5; i <= 9; i++) {
     mouth.setPixelColor(i, mouth.Color(120, 0, 120));
   }
-  eyeL.show();  // отправляем сигнал на ленту
+  eyeL.show();
   eyeR.show();
   mouth.show();
 }
@@ -91,52 +77,52 @@ void trash(int x) {
   switch (x) {
     case 1:
       for (int i = 3; i <= 9; i++) {
-        eyeL.setPixelColor(i, eyeL.Color(0, 255, 0));  // включаем белый цвет на 3 светодиоде
+        eyeL.setPixelColor(i, eyeL.Color(0, 255, 0));
         eyeR.setPixelColor(i, eyeR.Color(0, 255, 0));
         mouth.setPixelColor(i, mouth.Color(0, 255, 0));
       }
-      eyeL.show();  // отправляем сигнал на ленту
+      eyeL.show();
       eyeR.show();
       mouth.show();
     case 2:
       for (int i = 3; i <= 9; i++) {
-        eyeL.setPixelColor(i, eyeL.Color(0, 0, 255));  // включаем белый цвет на 3 светодиоде
+        eyeL.setPixelColor(i, eyeL.Color(0, 0, 255));
         eyeR.setPixelColor(i, eyeR.Color(0, 0, 255));
         mouth.setPixelColor(i, mouth.Color(0, 0, 255));
       }
-      eyeL.show();  // отправляем сигнал на ленту
+      eyeL.show();
       eyeR.show();
       mouth.show();
     case 3:
       for (int i = 3; i <= 9; i++) {
-        eyeL.setPixelColor(i, eyeL.Color(0, 255, 255));  // включаем белый цвет на 3 светодиоде
+        eyeL.setPixelColor(i, eyeL.Color(0, 255, 255));
         eyeR.setPixelColor(i, eyeR.Color(0, 255, 255));
         mouth.setPixelColor(i, mouth.Color(0, 255, 255));
       }
       mouth.setPixelColor(10, mouth.Color(0, 255, 255));
       mouth.setPixelColor(11, mouth.Color(0, 255, 255));
 
-      eyeL.show();  // отправляем сигнал на ленту
+      eyeL.show();
       eyeR.show();
       mouth.show();
   }
-   motionDetected = digitalRead(pinD0);  // Считываем показания
-  if (motionDetected) {
-    naprav *= -1;
-    if (naprav > 0) {
-      for (int i = 70; i < 110; i++) {
-        earL.write(i);  // tell servo to go to position in variable 'pos'
-        earR.write(i);
-        delay(5);
-      }
-    } else {
-      for (int i = 110; i > 70; i--) {
-        earL.write(i);  // tell servo to go to position in variable 'pos'
-        earR.write(i);
-        delay(5);
-      }
-    }
-  }
+  // motionDetected = digitalRead(step);
+  // if (motionDetected) {
+  //   naprav *= -1;
+  //   if (naprav > 0) {
+  //     for (int i = 70; i < 110; i++) {
+  //       earL.write(i);
+  //       earR.write(i);
+  //       delay(5);
+  //     }
+  //   } else {
+  //     for (int i = 110; i > 70; i--) {
+  //       earL.write(i);
+  //       earR.write(i);
+  //       delay(5);
+  //     }
+  //   }
+  // }
   delay(2000);
   c = 0;
   eyeL.clear();
@@ -155,10 +141,10 @@ void loop() {
     switch (count) {
       case 1:
         turningOn();
-      // case 2:
-      //   trash(count);
-      // case 3:
-      //   trash(count);
+        // case 2:
+        //   trash(count);
+        // case 3:
+        //   trash(count);
         // case 4:
         //   kind();
         // case 5:
