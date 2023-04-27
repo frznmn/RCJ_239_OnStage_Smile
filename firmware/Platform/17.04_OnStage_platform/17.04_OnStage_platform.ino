@@ -94,7 +94,7 @@ void loop()
     Serial.print("Serial3: ");
     Serial.println(Serial3.read());
   }
-  /*if (Serial3.available() > 0)
+  if (Serial3.available() > 0)
   {
     int tag = Serial3.read();
     //Serial.println(tag);
@@ -222,5 +222,5 @@ void loop()
       default: break;
 
     }
-  }*/
+  }//*/
 }

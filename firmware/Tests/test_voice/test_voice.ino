@@ -103,7 +103,7 @@ void pupilRight(int desiredPosition)
 void loop()
 {  
   myDFPlayer.play(1);
-  delay(3000);
+  delay(100000);
 }
 
 /*

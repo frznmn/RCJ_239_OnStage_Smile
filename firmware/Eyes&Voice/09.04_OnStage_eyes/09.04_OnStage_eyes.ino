@@ -123,27 +123,8 @@ void loop()
       eyeRight(0);
   }
 
-  if (Serial2.available() > 0) {
-    Serial1.write(Serial2.read());
-    condition = Serial2.read();
-    Serial.println(condition);
-    switch (condition) {
-      case 3:
-        Serial.println("case 2");
-        myDFPlayer.play(3);
-        delay(9000);
-        myDFPlayer.play(4);
-        delay(10000);
-        break;
-      case 4:
-        Serial.println("case 3");
-        myDFPlayer.play(5);
-        delay(3000);
-        myDFPlayer.play(6);
-        delay(8000);
-        break;
-    }
-  }
+  myDFPlayer.play(1);
+  delay(100000);
 }
 
 /*

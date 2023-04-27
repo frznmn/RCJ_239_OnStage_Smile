@@ -103,7 +103,7 @@ void loop()
         tag = Serial3.read();
         while (tag == 2) {
           tag = Serial3.read();
-          feet.stop();
+          feet.stop();  
           motorA.set(0);
           motorB.set(0);
           motorC.set(0);
