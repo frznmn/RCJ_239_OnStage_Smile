@@ -4,11 +4,11 @@ DFRobotDFPlayerMini myDFPlayer;
 
 #include <Servo.h>
 
-#define CLOSE_LEFT_EYE 0
+#define CLOSE_LEFT_EYE 60
 #define CLOSE_RIGHT_EYE 0
-#define CLOSE_LEFT_PUPIL 0
+#define CLOSE_LEFT_PUPIL 60
 #define CLOSE_RIGHT_PUPIL 0
-#define DELTA_EYE 0
+#define DELTA_EYE 60
 
 Servo eyelidLeft;
 Servo eyelidRight;
@@ -21,7 +21,7 @@ uint32_t   myTimerPupilLeft = millis();
 uint32_t   myTimerPupilRight = millis();
 uint32_t   timerCond = millis();
 
-int condition = 0, conditionRec = -1;
+int condition = -1, conditionRec = -1;
 int tagReal = 0, tagShowed = 0;
 
 void setup()
@@ -32,25 +32,28 @@ void setup()
   Serial3.begin(9600);        //инициализируем UART связи с плеером
   Serial.print("\tПривет!\n");
   myDFPlayer.begin(Serial3);  //инициализируем плеер
-  myDFPlayer.volume(30);      //от 10 до 30
+  myDFPlayer.volume(25);      //от 10 до 30
 
-  eyelidLeft.attach(6);      //инициализируем сервопривод левых век 12
-  eyelidRight.attach(5);     //инициализируем сервопривод правых век 11
+  eyelidLeft.attach(12);      //инициализируем сервопривод левых век 12
+  eyelidRight.attach(11);     //инициализируем сервопривод правых век 11
 
-  eyepupilLeft.attach(12);      //инициализируем сервопривод левой брови 8
-  eyepupilRight.attach(11);     //инициализируем сервопривод правой брови 9
+  eyepupilLeft.attach(8);      //инициализируем сервопривод левой брови 8
+  eyepupilRight.attach(9);     //инициализируем сервопривод правой брови 9
 
   myTimerEyeLeft = millis();  //Обнуляем таймер
   myTimerEyeRight = millis();
-
   myTimerPupilLeft = millis();
   myTimerPupilRight = millis();
-
   timerCond = millis();     //Обнуляем таймер
   pupilLeft(20);
   pupilRight(0);
-
+  //condition = 2;
   pinMode(13, 1);
+  delay(2000);
+  myDFPlayer.play(1);
+  delay(3000);
+  myDFPlayer.play(2);
+  delay(4000);
 }
 
 void eyeLeft(int desiredPosition)
@@ -101,9 +104,46 @@ void pupilRight(int desiredPosition)
 }
 
 void loop()
-{  
-  myDFPlayer.play(1);
-  delay(100000);
+{
+  if (millis() - myTimerEyeLeft > 20)   //плавное движение серв
+  {
+    myTimerEyeLeft = millis();
+    if (millis() % 4000 > 2000)
+      eyeLeft(40);
+    else if (millis() % 4000 > 500)
+      eyeLeft(0);
+  }
+
+  if (millis() - myTimerEyeRight > 20)   //плавное движение серв
+  {
+    myTimerEyeRight = millis();
+    if (millis() % 4000 > 2000)
+      eyeRight(40);
+    else if (millis() % 4000 > 500)
+      eyeRight(0);
+  }
+
+  if (Serial2.available() > 0) {
+    Serial1.write(Serial2.read());
+    condition = Serial2.read();
+    Serial.println(condition);
+    switch (condition) {
+      case 3:
+        Serial.println("case 2");
+        myDFPlayer.play(3);
+        delay(9000);
+        myDFPlayer.play(4);
+        delay(10000);
+        break;
+      case 4:
+        Serial.println("case 3");
+        myDFPlayer.play(5);
+        delay(3000);
+        myDFPlayer.play(6);
+        delay(8000);
+        break;
+    }
+  }
 }
 
 /*

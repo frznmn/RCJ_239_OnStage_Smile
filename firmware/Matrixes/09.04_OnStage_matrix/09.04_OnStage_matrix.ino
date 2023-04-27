@@ -88,53 +88,7 @@ void loop() {
     @param    h   Height of bitmap in pixels
   */
   //drawRGBBitmap(x координата верхнего левого угла,y координата верхнего левого угла, bitmap byte массив 16бит цветной, ширина в пикселях, высота в пикселях)
+  matrix->drawRGBBitmap(0, 0, (const uint16_t *) default_bitmap, 16, 8);
+  matrix->show();
 
-  if (Serial1.available() > 0)
-  {
-    condition = Serial1.read();
-    Serial.println(condition);
-    Serial1.write(condition);
-  }
-
-  switch (condition)                 // switch для переключения между эмоциями
-  {
-    case 2:
-      cheeks[1] = 0x901010;
-      if (millis() % 1000 > 500)
-      {
-        matrix->drawRGBBitmap(0, 0, (const uint16_t *) default_bitmap, 16, 8);
-        matrix->show();
-      }
-      else
-      {
-        matrix->drawRGBBitmap(0, 0, (const uint16_t *) dvizh, 16, 8);
-        matrix->show();
-      }
-      break;
-    case 4:
-      if (millis() % 1000 > 500)
-      {
-        matrix->drawRGBBitmap(0, 0, (const uint16_t *) default_bitmap, 16, 8);
-        matrix->show();
-      }
-      else
-      {
-        matrix->drawRGBBitmap(0, 0, (const uint16_t *) dvizh, 16, 8);
-        matrix->show();
-      }
-      break;
-    case 5:
-      matrix->drawRGBBitmap(0, 0, (const uint16_t *) smile, 16, 8); cheeks[2] = 0x901010; matrix->show(); break;       // эмоция - радость
-    case 7:
-      matrix->drawRGBBitmap(0, 0, (const uint16_t *) sad, 16, 8); cheeks[3] = 0x901010; matrix->show(); break;         // эмоция - грусть
-    case 9:
-      matrix->drawRGBBitmap(0, 0, (const uint16_t *) surprised, 16, 8); cheeks[4] = 0x901010; matrix->show(); break;   // эмоция - удивление
-    case 11:
-      matrix->drawRGBBitmap(0, 0, (const uint16_t *) angry, 16, 8); cheeks[5] = 0x901010; matrix->show(); break;      // эмоция - злость
-    case 13:
-      matrix->drawRGBBitmap(0, 0, (const uint16_t *) default_bitmap, 16, 8); cheeks[6] = 0x901010; matrix->show(); break;
-    case 15:
-      matrix->drawRGBBitmap(0, 0, (const uint16_t *) default_bitmap, 16, 8); cheeks[7] = 0x901010; matrix->show(); break;
-    default: break;
-  }
 }
