@@ -10,7 +10,7 @@ Motors motorD = Motors(13, 29, 28, 3, 37);
 
 int tagRec = -1, condition = -1;
 bool walking = 0;
-bool tag_flag = true, flag = true, flag_nach = true;
+bool tag_flag = true, flag = true;
 uint32_t myTimer2 = millis();
 uint32_t myTimerPlatform = millis();
 uint32_t myTimer = millis(), timerVel = millis(), Timer_dvizh = millis(), timerCond = millis();
@@ -55,7 +55,6 @@ void mecmove(float des_angle, float des_vel)
       C  180  D
   /*/
 
-
 void setup()
 {
   Serial.begin(9600);
@@ -68,32 +67,22 @@ void setup()
   nMotorEncoder[0] = nMotorEncoder[1] = nMotorEncoder[2] = nMotorEncoder[3] = 0;
   Timer_dvizh = millis();
   timerCond = millis();
+
+  Serial.println("case 2");
+  Serial2.write(2);                       //начало, подъезжаем к роботу
+  while ( melissa % 20000 < 9000) {
+    feet.set(400);
+    mecmove(330, 90);
+  }
+  feet.stop();
+  motorA.set(0);
+  motorB.set(0);
+  motorC.set(0);
+  motorD.set(0);
 }
 
 void loop()
 {
-  if (flag_nach) {
-    Serial2.write(13);
-    Serial.println("13");
-    feet.set(400);
-    while ( melissa % 20000 < 9000) {
-      mecmove(330, 90);
-    }
-    feet.stop();
-    motorA.set(0);
-    motorB.set(0);
-    motorC.set(0);
-    motorD.set(0);
-    flag_nach = false;
-  }
-  if (Serial2.available()) {
-    Serial.print("Serial2: ");
-    Serial.println(Serial2.read());
-  }
-  if (Serial3.available()) {
-    Serial.print("Serial3: ");
-    Serial.println(Serial3.read());
-  }
   if (Serial3.available() > 0)
   {
     int tag = Serial3.read();
@@ -176,10 +165,10 @@ void loop()
             }
           }
         }
-        break;
+        break;//*/
       case 2:
         Serial.println("case 2");
-        Serial2.write(condition);                     //первый жест, двигаемся туда
+        Serial2.write(condition);                     //первый жест, двигаемся туда-сюда
         if (flag) {
           feet.set(400);
           mecmove(90, 90);
@@ -196,7 +185,7 @@ void loop()
         break;
       case 3:
         Serial.println("case 3");
-        Serial2.write(condition);                     //первый жест, двигаемся туда
+        Serial2.write(condition);                     //второй жест, двигаемся туда-сюда
         if (tag_flag) {
           feet.set(400);
           mecmove(90, 90);
@@ -215,12 +204,11 @@ void loop()
         Serial.println("case 4");
         Serial2.write(condition);                     //двигаемся сюда
         break;
-      case 5:
-        Serial.println("case 4");
+      /*case 5:
         Serial2.write(condition);
-        break;
+        break;//*/
       default: break;
 
     }
-  }//*/
+  }
 }
